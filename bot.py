@@ -11,7 +11,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 async def send_message(message, user_message, is_private):
     try:
-        response = "`" + str(KI.send_response(user_message)) + "`"
+        response = "```" + str(KI.send_response(user_message)) + "```"
         print(response)
         await message.author.send(response) if is_private else await message.channel.send(response)
 

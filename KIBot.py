@@ -8,13 +8,25 @@ command_dict = {'5LP':["Standing LP", "Close LP", "Far LP"], '2LP':['Crouching L
 '5HP':['Close HP', 'Far HP', 'Standing HP'], '2HP':['Crouching HP'], '6LP':["Forward LP"], '6MP':['Forward MP'], '6HP':["Forward HP"], '3HP':["Down-Forward HP"],
 '1HP':['Down-Back HP', 'DB HP'], '4LP':['Back LP'], '4MP':['Back MP'], 
 '4HP':["Back HP"], '5LK':['Standing LK', 'Close LK', 'Far LK'], '2LK':['Crouching LK'], '5MK':['Standing MK', 'Close MK', 'Far MK'], '2MK':['Crouching MK'], 
-'5HK':['Standing HK', 'Close HK', 'Far HK'], '2HK':['Crouching HK'], '4LK':['Back LK'], '4MK':["Back MK"], '4HK':['Back HK'], '6LK':["Forward LK"], '6MK':["Forward MK"],
+'5HK':['Standing HK', 'Close HK', 'Far HK'], '2HK':['Crouching HK'], '3HK':['Down-Forward HK', 'DF+HK'], '4LK':['Back LK'], '4MK':["Back MK"], '4HK':['Back HK'], '6LK':["Forward LK"], '6MK':["Forward MK"],
 '6HK':["Forward HK"], 'JLP':["Jumping LP"], "JMP":["Jumping MP"], 'JHP':['Jumping HP'], 'JLK':["Jumping LK"], 'JMK':['Jumping MK'], 'JHK':['Jumping HK'],
 'J6MK':["Jumping Forward MK"], 'J2MK':['Jumping Down MK'], 'J6HK':['Jumping Forward HK'], 'J2HK':['Jumping Down HK'], '44':['Backward Run', 'Backward Dash'],
 '66':['Forward Dash', 'Forward Run']}
 
+#inv_command_dict = {v: k for k, v in command_dict.items()}
+
+#Creates inverted command_dict for easy use in abbrevation 
+
+inv_command_dict = {item: key for key, values in command_dict.items() for item in values}
+
+
+
 notation_dict = {('st', 'far', 'fr', 'stand', 'standing'):["Standing", "Far"], ('cr', 'crouch', 'crouching'):['Crouching'], ('cl', 'close'):["Close"], 
-                 ('j'):['Jumping']}
+                 ('j'):['Jumping'], ('b', 'back'):["Back"], ('for', 'f', 'forward'):['Forward'], ('df'):['Down-Forward', 'DF+HK']}
+
+
+abbreviation_dict = {'Standing':"St.", 'Far':'St.', 'Crouching':"Cr.", 'Close':'Cl.', 'Jumping':'J.',
+                     'Back':'B.', 'Forward':'F.', 'Down-Forward':'DF.'}
 
 normals_list = ['LP', 'MP', 'HP', 'LK', 'MK', 'HK']
 
@@ -72,6 +84,7 @@ def search_command(message):
         result = re.search(normal_pattern, message.lower())
 
         # Regex matches with normal command pattern
+        part_1 = None
         if result != None:
             for x in notation_dict.keys():
                 if result.group(1).lower() in x:
@@ -148,13 +161,19 @@ def findframedata(df_map, character, command):
     df_map = df_map.iloc[:index]
 
     #Returns result from regex pattern, searching the first column for the specified command. 
-    result = df_map[df_map[first_column].str.contains(pattern, re.IGNORECASE, na=False,)] 
+    result = df_map[df_map[first_column].str.contains(pattern, re.IGNORECASE, na=False,)].copy()
+    result.reset_index(drop=True, inplace=True)
 
     #Returns an error if no results are found. Otherwise returns tabulated results. 
     if result.empty:
         raise ValueError('No results found')
-    return tabulate(result[[df_map.columns[0], df_map.columns[2], df_map.columns[3], df_map.columns[4], df_map.columns[6], df_map.columns[7], 
-                   df_map.columns[8]]], headers='keys', tablefmt='psql' ,showindex=False)
+    #return tabulate(result[[df_map.columns[0], df_map.columns[2], df_map.columns[3], df_map.columns[4], df_map.columns[6], df_map.columns[7], 
+                   #df_map.columns[8]]], headers='keys', tablefmt='simple' ,showindex=False, numalign='right')
+
+    print(abbreivate_response(result))
+    result.rename(columns={result.columns[2]:'SU', result.columns[6]:'OH', result.columns[7]:'OB'}, inplace=True)
+    return tabulate(result[[result.columns[0], result.columns[2], result.columns[6], result.columns[7]]], 
+                    headers='keys', tablefmt='simple' ,showindex=False, numalign='right')
     
 def get_df(character):
     #df_map = sheet_to_df_map[character]
@@ -177,7 +196,31 @@ def send_response(char, command):
     return print_statement
 
 
+#Abbreviates results from search to better fit mobile and smaller screens
+def abbreivate_response(table):
+    pattern = r"[ ]+"
+    '''
+    for row_name in table.iloc[:,0]:
+        value = inv_command_dict.get(row_name)
+        if value != None:
+            #table.at[row_name, 0] = value
+            print(table)
+            '''
 
+    for i in range(len(table.index)):
+        index =  table.iloc[i,0]
+        # Remove spaces from results
+        index = re.sub(r"[ ]+", '', index)
+        for keys, value in abbreviation_dict.items():
+                if keys in index:
+                    result = re.sub(keys, value, index)
+                    table.iloc[i,0] = result
+                    break
+
+        #value = inv_command_dict.get(index)
+        #if value != None:
+            #table.iloc[i,0] = value      
+    return table
 def main():
     
 
@@ -195,7 +238,7 @@ def main():
 
 
 # Unhastag this if you want to test commands in the terminal line or in python. 
-#main()
+main()
 
 
 
