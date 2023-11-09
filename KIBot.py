@@ -170,8 +170,14 @@ def findframedata(df_map, character, command):
     #return tabulate(result[[df_map.columns[0], df_map.columns[2], df_map.columns[3], df_map.columns[4], df_map.columns[6], df_map.columns[7], 
                    #df_map.columns[8]]], headers='keys', tablefmt='simple' ,showindex=False, numalign='right')
 
-    print(abbreivate_response(result))
-    result.rename(columns={result.columns[2]:'SU', result.columns[6]:'OH', result.columns[7]:'OB'}, inplace=True)
+    
+    #print(abbreivate_response(result))
+    abbreivate_response(result)
+    #result.rename(columns={result.columns[2]:'SU', result.columns[6]:'OH', result.columns[7]:'OB'}, inplace=True)
+    formatted_string = format_response(result)
+    return formatted_string
+    
+    #Old return that formatted results with tabulate
     return tabulate(result[[result.columns[0], result.columns[2], result.columns[6], result.columns[7]]], 
                     headers='keys', tablefmt='simple' ,showindex=False, numalign='right')
     
@@ -221,6 +227,17 @@ def abbreivate_response(table):
         #if value != None:
             #table.iloc[i,0] = value      
     return table
+
+def format_response(result_df):
+    string = f"{result_df.columns[0]}\n"
+    for i in range(len(result_df.index)):
+        string += f"{result_df.iloc[i,0]}\n"
+        string += f"{result_df.columns[2]}: {result_df.iloc[i,2]}\n"
+        string += f"{result_df.columns[6]}: {result_df.iloc[i,6]}\n"
+        string += f"{result_df.columns[7]}: {result_df.iloc[i,7]}\n"
+        
+    return string
+
 def main():
     
 
@@ -238,7 +255,7 @@ def main():
 
 
 # Unhastag this if you want to test commands in the terminal line or in python. 
-main()
+#main()
 
 
 

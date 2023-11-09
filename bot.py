@@ -11,7 +11,7 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 async def send_message(message, user_message, is_private):
     try:
-        response = "```" + str(KI.send_response(user_message)) + "```"
+        response = "```\n" + str(KI.send_response(user_message)) + "\n```"
         print(response)
         await message.author.send(response) if is_private else await message.channel.send(response)
 
@@ -82,7 +82,7 @@ def command_discord_bot():
         try:
             print(ctx.message.content)
             print(f'Name: {name}, Command: {command}')
-            response = "`" + str(KI.send_response(name, command)) + "`"
+            response = "```\n" + str(KI.send_response(name, command)) + "\n```"
             print(response)
             await ctx.send(response)
         except Exception as error:
