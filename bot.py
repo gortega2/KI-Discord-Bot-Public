@@ -84,7 +84,7 @@ def command_discord_bot():
             id_list = [643251292545875978, 1172663094745501766]
             bot_testing_id = 643251292545875978
             ki_bot_channel_id = 1172663094745501766
-            channel_id = ctx.mesesage.channel.id
+            channel_id = ctx.message.channel.id
             print(ctx.message.channel.id)
             print(ctx.message.content)
             print(f'Name: {name}, Command: {command}')
