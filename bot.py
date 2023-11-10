@@ -80,11 +80,15 @@ def command_discord_bot():
     async def frame_data(ctx, name: str = commands.parameter(description='Name of the character'),
                           command: str = commands.parameter(description="Command notation of the move (Ex. 5HK, Cl.HK, QCB+HK)")):
         try:
+            #ADD CHANNEL ID HERE FOR THE BOT TO BE ABLE TO REPLY IN THAT CHANNEL
+            id_list = [643251292545875978, 1172663094745501766]
             bot_testing_id = 643251292545875978
+            ki_bot_channel_id = 1172663094745501766
+            channel_id = ctx.mesesage.channel.id
             print(ctx.message.channel.id)
             print(ctx.message.content)
             print(f'Name: {name}, Command: {command}')
-            if ctx.message.channel.id == bot_testing_id:
+            if channel_id in id_list:
                 response = "```\n" + str(KI.send_response(name, command)) + "\n```"
                 print(response)
                 await ctx.send(response)
