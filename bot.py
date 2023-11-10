@@ -80,11 +80,14 @@ def command_discord_bot():
     async def frame_data(ctx, name: str = commands.parameter(description='Name of the character'),
                           command: str = commands.parameter(description="Command notation of the move (Ex. 5HK, Cl.HK, QCB+HK)")):
         try:
+            bot_testing_id = 643251292545875978
+            print(ctx.message.channel.id)
             print(ctx.message.content)
             print(f'Name: {name}, Command: {command}')
-            response = "```\n" + str(KI.send_response(name, command)) + "\n```"
-            print(response)
-            await ctx.send(response)
+            if ctx.message.channel.id == bot_testing_id:
+                response = "```\n" + str(KI.send_response(name, command)) + "\n```"
+                print(response)
+                await ctx.send(response)
         except Exception as error:
             print(f"There was an error: {error}")
 
