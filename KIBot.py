@@ -30,14 +30,15 @@ abbreviation_dict = {'Standing':"St.", 'Far':'St.', 'Crouching':"Cr.", 'Close':'
 
 normals_list = ['LP', 'MP', 'HP', 'LK', 'MK', 'HK']
 
-specials_list = ['QCB', 'QCF', 'BF', 'DP', 'DU', '3P', '3K']
+specials_list = ['QCB', 'QCF', 'BF', 'DP', 'DU', '3P', '3K', '2P', '3P']
 
 specials_dict = {'214':'QCB', '236':'QCF', '46':'BF', '623':'DP', '28':'DU'}
 
 character_dict= {('jappa'):'Jago', ('sabre', 'wulf', 'dog', 'doggo'):'Sabrewulf', ('glay', 'cold_shoulder'):'Glacius',
                          ('jhp', 'thun'):'Thunder', ('shago'):'Shadow_Jago', ('sad'):'Sadira', ('orc'):'Orchid', ('tj', 'combo'):'TJ_Combo',
                          ('kan', 'ra',):'Kan_Ra', ('rip', 'dino'):'Riptor', ('fraud','sako'):'Hisako', ('kim', 'wu'):'Kim_Wu',
-                         ('arby'):'Arbiter', ('carried_ball'):'Rash', ('raam'):'General_RAAM', ('not_blocking', 'dol'):'Eyedol'}
+                         ('arby'):'Arbiter', ('carried_ball'):'Rash', ('raam'):'General_RAAM', ('not_blocking', 'eye', 'dol'):'Eyedol',
+                         }
 
 # Accesses the frame data xls file and then makes a df map from the data
 xls = pd.ExcelFile('Killer Instinct Frame Data.xls')
@@ -74,8 +75,8 @@ def search_command(message):
     #Different patterns to capture different types of formating/notation. Could be done better but it works
     command = command_dict.get(message.upper())
     normal_pattern = r'([\w]*)\.([23lmh][kp])'
-    special_pattern = r'([qcfbdubp]+)\+([23lmh][kp])'
-    numeric_pattern = r'([1-9]+)\+([23lmh][kp])'
+    special_pattern = r'([qcfbdubp]+)[+]?([23lmh][kp])'
+    numeric_pattern = r'([1-9]+)[+]?([23lmh][kp])'
     target_pattern = r'([qcfbdubplmhkpx]{2,}[ +>lmhpkx23]+)+'
     command_list = []
     
@@ -235,6 +236,7 @@ def format_response(result_df):
         string += f"{result_df.columns[2]}: {result_df.iloc[i,2]}\n"
         string += f"{result_df.columns[6]}: {result_df.iloc[i,6]}\n"
         string += f"{result_df.columns[7]}: {result_df.iloc[i,7]}\n"
+        string += "\n"
         
     return string
 

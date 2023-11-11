@@ -89,7 +89,7 @@ def command_discord_bot():
             print(ctx.message.content)
             print(f'Name: {name}, Command: {command}')
             if channel_id in id_list:
-                response = "```\n" + str(KI.send_response(name, command)) + "\n```"
+                response = "```\n" + str(KI.send_response(name.lower(), command.lower())) + "\n```"
                 print(response)
                 await ctx.send(response)
         except Exception as error:
