@@ -15,8 +15,9 @@ command_dict = {'5LP':["Standing LP", "Close LP", "Far LP"], '2LP':['Crouching L
 
 command_regex_pattern = '('+'|'.join(command_dict.keys()) + ')'
 
-numeric_dict ={'1':'Down-Back', '2':'Crouching', '3':'Down-Forward', '4':'Back', '5':'Standing', '6':'Forward',
-               'J2':'Jumping Down','J4':'Jumping Back', 'J6':'Jumping Forward'}
+numeric_dict ={'J1':'Jumping Down-Back', 'J2':'Jumping Down', 'J3':'Jumping Down-Forward', 'J4':'Jumping Back', 'J6':'Jumping Forward',
+               '1':'Down-Back', '2':'Crouching', '3':'Down-Forward', '4':'Back', '5':'Standing', '6':'Forward',
+               }
 
 #inv_command_dict = {v: k for k, v in command_dict.items()}
 #inv_command_dict = {item: key for key, values in command_dict.items() for item in values}
@@ -24,7 +25,9 @@ numeric_dict ={'1':'Down-Back', '2':'Crouching', '3':'Down-Forward', '4':'Back',
 
 
 notation_dict = {('ST', 'FAR', 'FR', 'STAND', 'STANDING'):"Standing", ('CR', 'CROUCH', 'CROUCHING'):'Crouching', ('CL', 'CLOSE'):"Close", 
-                 ('J',):'Jumping', ('B', 'BACK'):"Back", ('FOR', 'F', 'FORWARD'):'Forward', ('DF',):'Down-Forward'}
+                 ('J',):'Jumping', ('B', 'BACK'):"Back", ('FOR', 'F', 'FORWARD'):'Forward', ('DF',):'Down-Forward', ('DB',):'Down-Back',
+                 ('JD',):'Jumping Down', ('JDF',): 'Jumping Down-Forward', ('JB',):'Jumping Back', ('JDB',):'Jumping Down-Back', 
+                 ('JF',):'Jumping Forward'}
 
 
 abbreviation_dict = {'Standing':"St.", 'Far':'St.', 'Crouching':"Cr.", 'Close':'Cl.', 'Jumping':'J.',
@@ -36,10 +39,10 @@ specials_list = ['QCB', 'QCF', 'BF', 'DP', 'DU', '3P', '3K', '2P', '3P']
 
 specials_dict = {'214':'QCB', '236':'QCF', '46':'BF', '623':'DP', '28':'DU'}
 
-character_dict= {('JAPPA'):'Jago', ('SABRE', 'WULF', 'DOG', 'DOGGO'):'Sabrewulf', ('GLAY', 'COLD_SHOULDER'):'Glacius',
-                         ('JHP', 'THUN'):'Thunder', ('SHAGO'):'Shadow_Jago', ('SAD'):'Sadira', ('ORC'):'Orchid', ('TJ', 'COMBO'):'TJ_Combo',
+character_dict= {('JAPPA', ):'Jago', ('SABRE', 'WULF', 'DOG', 'DOGGO'):'Sabrewulf', ('GLAY', 'COLD_SHOULDER'):'Glacius',
+                         ('JHP', 'THUN'):'Thunder', ('SHAGO'):'Shadow_Jago', ('SAD', ):'Sadira', ('ORC', ):'Orchid', ('TJ', 'COMBO'):'TJ_Combo',
                          ('KAN', 'RA',):'Kan_Ra', ('RIP', 'DINO'):'Riptor', ('FRAUD','SAKO'):'Hisako', ('KIM', 'WU'):'Kim_Wu',
-                         ('ARBY'):'Arbiter', ('CARRIED_BALL'):'Rash', ('RAAM'):'General_RAAM', ('NOT_BLOCKING', 'EYE', 'DOL'):'Eyedol',
+                         ('ARBY', ):'Arbiter', ('CARRIED_BALL', ):'Rash', ('RAAM', ):'General_RAAM', ('NOT_BLOCKING', 'EYE', 'DOL'):'Eyedol',
                          }
 
 # Accesses the frame data xls file and then makes a df map from the data
@@ -169,7 +172,7 @@ def search_command(message):
 def search_command_redone(command):
     #First, check if the command inputted has a numeric value which indicates it's using anime notation (not [2/3][P/K])
     numeric_pattern = r'[1-9]{2,3}'
-    one_digit = r'[1-9]{1,1}(?![PK])'
+    one_digit = r'[J]?[1-9]{1,1}(?![PK])'
     special_pattern = '|'.join(specials_list[0:4])
     normal_pattern = r'[\w]+[.+](?=[\w])'
     result = command
@@ -186,10 +189,7 @@ def search_command_redone(command):
             result= re.sub(test_pattern, f'{value} ', result)
         
     
-    #Format normal notation specials
-    if re.search(special_pattern, result):
-        for special in specials_list[0:4]:
-            re.sub(f'{special}[+]?', f'{special}+', result)
+    #Format normal notation specialssend_responsepecial}+', result)
 
     #subsitue abbreivations for full names 
     if re.search(normal_pattern, result):
@@ -199,8 +199,12 @@ def search_command_redone(command):
                 result = re.sub(test_pattern, f'{values} ', result)
 
     
+    result = re.sub('PPP', '3P', result)
+    result = re.sub('PP', '2P', result)
+    result = re.sub('KKK', '3K', result)
+    result = re.sub('KK', '2K', result)
     return [result]
-def findframedata(df_map, character, command):
+def findframedata(df_map, command):
     first_column = df_map.columns[0]
     strict = False
 
@@ -211,6 +215,7 @@ def findframedata(df_map, character, command):
         first_column = df_map.columns[0]
         for x in command:
             x = "^" + x + "$"
+            x = f'^{x}$'
             regex_list.append(x)
             pattern = r'|'.join(regex_list) #Creates a regex expression
     else:
@@ -231,6 +236,7 @@ def findframedata(df_map, character, command):
 
     #Returns an error if no results are found. Otherwise returns tabulated results. 
     if result.empty:
+        print('test')
         raise ValueError('No results found')
     #return tabulate(result[[df_map.columns[0], df_map.columns[2], df_map.columns[3], df_map.columns[4], df_map.columns[6], df_map.columns[7], 
                    #df_map.columns[8]]], headers='keys', tablefmt='simple' ,showindex=False, numalign='right')
@@ -253,17 +259,9 @@ def get_df(character):
 
 
 def send_response(char, command):
-    try:
-        character, command = check_message(char, command)
-    except ValueError as err:
-        return err
-    
+    character, command = check_message(char, command)
     df = get_df(character)
-    try:
-
-        print_statement = findframedata(df, character, command)
-    except ValueError as err:
-        return err
+    print_statement = findframedata(df, command)
     return print_statement
 
 
@@ -311,9 +309,10 @@ def main():
         try:
             #character, command = parsemessage_alt(input("Enter character name, space, and then command: "))
             p_input = input("CHAR COMMAND: ").split()
-            print(p_input[0])
+            #print(p_input[0])
             response = send_response(p_input[0], p_input[1])
         except ValueError as err:
+            print(type(err))
             print(err)
             continue
 

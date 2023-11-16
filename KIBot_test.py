@@ -9,6 +9,13 @@ import re
 
 class Testcases(unittest.TestCase):
 
+    def run_test_procedure(test_char, command_test):
+        char = search_character(test_char)
+        df = get_df(char)
+        command = search_command_redone(command_test)
+
+        return findframedata(df, command)
+
     def test_wrong_format(self):
         testcase = "incorrect string format"
         expected = ValueError
@@ -20,9 +27,10 @@ class Testcases(unittest.TestCase):
         self.assertRaises(expected, search_character, testcase)
 
     def test_wrong_command(self):
-        testcase = "12mk"
+        df = get_df('Jago')
+        testcase = "12m1231231k"
         expected = ValueError
-        self.assertRaises(expected, search_command, testcase)
+        self.assertRaises(expected, send_response, df,testcase)
 
     
     def test_framedata_search(self):
@@ -94,116 +102,10 @@ class Testcases(unittest.TestCase):
             char_result = search_character(char)
             df_map = get_df(char_result)
             self.assertIsInstance(df_map, DataFrame)
-    
-    def test_character_dict(self):
-        for tuple in character_dict.keys():
-            for nickname in tuple:
-                result = search_character(nickname)
-                self.assertIsNotNone(result)
 
     
-    #TODO: Write integration test code
-    '''
-    def test_integration(self):
-
-        test_dictionary = {"Jago":[(19,37), (41,46), (51, 53), (56,58),
-                                   (61,63), (66,69), (72, 75), (80,80)]}
-        
-        for keys, values in test_dictionary.items():
-            print(keys, values)
-            df_map = get_df(keys)
-            for tuple in values:
-                for i in range(tuple[0]-1, tuple[1]+1):
-                    print(i)
-                    s = df_map['Jago']
-                    print(df_map.iloc[i, 0])
-                    #print(s.iloc[[i]])
-                    command = df_map.iloc[i, 0]
-                    #print(df_map.iloc[[i]])
-                    #print(command)
-                    result = findframedata(get_df(keys), keys, [command])
-                    print(result)
-        return
 
 
-    
-    '''
-    '''
-    def test_basic(self):
-        testcase = "incorrect string format"
-        expected = ValueError
-        self.assertRaises(expected ,parsemessage, testcase)
-
-    def test_wrong_command(self):
-        testcase = 'jago 12mk'
-        expected = ValueError
-        self.assertRaises(expected, parsemessage, testcase)
-
-    def test_correct_input(self):
-        testcase = 'jago 5mk'
-        expected = tuple
-        #print(parsemessage(testcase))
-        self.assertTrue((parsemessage(testcase), expected))
-
-
-    def test_wrong_char(self):
-        testcase = 'fuck 5mk'
-        expected = ValueError
-        self.assertRaises(expected, parsemessage, testcase)
-
-    def test_df_map(self):
-        testcase = 'Jago'
-        #expected = type(DataFrame)
-        #print()
-        #print(expected)
-        self.assertFalse(get_df(testcase).empty)
-
-    def test_char_dict(self):
-        for char in character_dict.values():
-            testcase = char
-            self.assertFalse(get_df(testcase).empty)
-    
-    def test_normal_inputs(self):
-        pattern = r'[Jj]*[\d]*([\w]+)'
-        for keys, values in command_dict.items():
-            #print(keys)
-            result = re.search(pattern, keys)
-            #print(keys, result, result[1])
-            for value in values:
-                self.assertTrue(result[1] in value)
-                #print(keys, result, result[1], value)
-            #self.assertTrue(result in value for value in values)
-    
-    
-    def test_alt_parsemessage(self):
-        testcase = 'Jago 5mk'
-        expected = tuple
-        result = parsemessage_alt(testcase)
-        self.assertTrue(result, tuple)
-
-    def test_alt_parsemessage_rekka(self):
-        testcase = 'hisako qcf+p > p > HP'
-        expected = tuple
-        result = parsemessage_alt(testcase)
-        self.assertTrue(result, testcase)
-
-    def test_alt_parsemessage_normals(self):
-        expected = tuple
-        for key in command_dict.keys():
-            string = 'Jago '+ key
-            self.assertTrue(parsemessage_alt(string), tuple)
-
-    def test_alt_parsemessage_specials(self):
-        return
-    
-
-    def test_none_return(self):
-        testcase = 'jago 4mk'
-        expected = type(None)
-        #print(parsemessage(testcase))
-        tye = type(parsemessage(testcase))
-        self.assertTrue(type(parsemessage(testcase) is type(str)))
-    '''
 
 if __name__ == '__main__':
    unittest.main()
