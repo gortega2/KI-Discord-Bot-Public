@@ -320,7 +320,7 @@ def main():
 
 
 # Unhastag this if you want to test commands in the terminal line or in python. 
-main()
+#main()
 
 
 
