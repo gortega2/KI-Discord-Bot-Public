@@ -16,7 +16,7 @@ command_dict = {'5LP':["Standing LP", "Close LP", "Far LP"], '2LP':['Crouching L
 command_regex_pattern = '('+'|'.join(command_dict.keys()) + ')'
 
 numeric_dict ={'J1':'Jumping Down-Back', 'J2':'Jumping Down', 'J3':'Jumping Down-Forward', 'J4':'Jumping Back', 'J6':'Jumping Forward',
-               '1':'Down-Back', '2':'Crouching', '3':'Down-Forward', '4':'Back', '5':'Standing', '6':'Forward',
+               '1':'Down-Back', '2':'Crouching', '3':'Down-Forward', '4':'Back', 'C5':'Close', '5':'Standing', '6':'Forward',
                }
 
 #inv_command_dict = {v: k for k, v in command_dict.items()}
