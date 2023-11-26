@@ -292,13 +292,24 @@ def abbreivate_response(table):
     return table
 
 def format_response(result_df):
-    string = f"{result_df.columns[0]}\n"
+    char_list = ['Jago', 'Shadow_Jago', 'Omen']
+    char = result_df.columns[0]
+    string = f"{char}\n"
     for i in range(len(result_df.index)):
         string += f"{result_df.iloc[i,0]}\n"
         string += f"{result_df.columns[2]}: {result_df.iloc[i,2]}\n"
         string += f"{result_df.columns[6]}: {result_df.iloc[i,6]}\n"
         string += f"{result_df.columns[7]}: {result_df.iloc[i,7]}\n"
+        if char in char_list:
+            string += f"{result_df.columns[9]}:{result_df.iloc[i,9]}\n"
+            if not result_df.isna().iloc[i,14]:
+                string += f"{result_df.columns[14]}: {result_df.iloc[i,14]}\n"
+        else:
+            if not result_df.isna().iloc[i, 13]:
+                string += f"{result_df.columns[13]}: {result_df.iloc[i,13]}\n"
         string += "\n"
+            
+
         
     return string
 
