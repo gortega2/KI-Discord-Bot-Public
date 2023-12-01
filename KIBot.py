@@ -43,6 +43,7 @@ character_dict= {('JAPPA', ):'Jago', ('SABRE', 'WULF', 'DOG', 'DOGGO'):'Sabrewul
                          ('JHP', 'THUN'):'Thunder', ('SHAGO'):'Shadow_Jago', ('SAD', ):'Sadira', ('ORC', ):'Orchid', ('TJ', 'COMBO'):'TJ_Combo',
                          ('KAN', 'RA',):'Kan_Ra', ('RIP', 'DINO'):'Riptor', ('FRAUD','SAKO'):'Hisako', ('KIM', 'WU'):'Kim_Wu',
                          ('ARBY', ):'Arbiter', ('CARRIED_BALL', ):'Rash', ('RAAM', ):'General_RAAM', ('NOT_BLOCKING', 'EYE', 'DOL'):'Eyedol',
+                         ('WARRIOR',):'Warriordol', ('MAGE', ):'Magedol', ('INSTINCT'):'Instinctdol'
                          }
 
 # Accesses the frame data xls file and then makes a df map from the data
